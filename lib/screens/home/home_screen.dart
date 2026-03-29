@@ -13,6 +13,8 @@ class HomeScreen extends StatefulWidget {
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
+
+
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -69,15 +71,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 SizedBox(
-                  height: 90,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _homeController.categories.length,
-                      itemBuilder: (context, index) {
-                        final category = _homeController.categories[index];
-                        return _buildCategory(category);
-                      }
-                  )
+                  height: 100,
+                  child: Obx(() {
+                    return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _homeController.categories.length,
+                        itemBuilder: (context, index) {
+                          final category = _homeController.categories[index];
+                          return _buildCategory(category);
+                        }
+                    );
+                  })
                 ),
                 SizedBox(height: 10.0,),
                 Row(
@@ -114,24 +118,32 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildCategory(CategoryModel category) {
-    return Container(
-      margin: EdgeInsets.only(right: 10, left: 5),
-      width: 80,
-      padding: EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-          color: Colors.green.shade100,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-                color: Colors.green.shade300,
-                blurRadius: 5,
-                offset: Offset(0,2,)
-            )
-          ]
-      ),
-      child: Expanded(child: Center(
-        child: Image.asset(category.imagePath, height: 50,),
-      )),
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.only(right: 10, left: 5),
+          width: 65,
+          padding: EdgeInsets.all(10.0),
+          decoration: BoxDecoration(
+              color: Colors.green.shade100,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.green.shade300,
+                    blurRadius: 5,
+                    offset: Offset(0,2,)
+                )
+              ]
+          ),
+          child: Center(
+            child: category.imagePath.isNotEmpty
+                ? Image.network(category.imagePath, height: 50)
+                : Icon(Icons.image_not_supported),
+          ),
+        ),
+        SizedBox(height: 10.0,),
+        Text(category.name, style: TextStyle(fontWeight: FontWeight.w500),)
+      ],
     );
   }
 
