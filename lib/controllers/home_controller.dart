@@ -1,18 +1,16 @@
 import 'package:get/get.dart';
 import 'package:pharmacy_app/models/category_model.dart';
 import 'package:pharmacy_app/models/item_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeController extends GetxController {
 
   final RxInt currentIndex = 0.obs;
+  final supabase = Supabase.instance.client;
+  final _isloading = false.obs;
+  get isloading => _isloading.value;
 
-  final RxList<CategoryModel> categories = <CategoryModel>[
-    CategoryModel(id: '1', name: 'supplement', imagePath: 'assets/images/supplements.png'),
-    CategoryModel(id: '2', name: 'Pills', imagePath: 'assets/images/pill.png'),
-    CategoryModel(id: '3', name: 'Vitamins', imagePath: 'assets/images/vitamins.png'),
-    CategoryModel(id: '4', name: 'Syrups', imagePath: 'assets/images/liver.png'),
-    CategoryModel(id: '5', name: 'Creams', imagePath: 'assets/images/creams.png'),
-  ].obs;
+  RxList<CategoryModel> categories = <CategoryModel>[].obs;
 
   final RxList<ItemModel> bestSellerProduct = <ItemModel>[
     ItemModel(id: '1', name: 'Liver cleans Detox', imagePath: 'assets/images/pill.png', description: 'Health Voda Liver cleans Detox & repair natural', category: 'Pills', price: 29.99),
@@ -23,6 +21,31 @@ class HomeController extends GetxController {
 
   void updatedSelectedindex(int index) {
     currentIndex.value = index;
+  }
+
+  Future<List<CategoryModel>> fetchCategories() async {
+
+    try {
+      _isloading.value = true;
+      final response = await supabase.from('categories').select('category_id, name, image_path');
+
+      print('Response: $response');
+      final data = response.map((e) => CategoryModel.fromJson(e)).toList();
+      print('This is data $data');
+      categories.value = data;
+      print(categories);
+      return categories;
+
+    } catch (e) {
+      print('Error at this place: $e');
+      return [];
+    }
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchCategories(); // Fetch categories when controller is initialized
   }
 
 }
