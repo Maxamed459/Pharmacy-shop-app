@@ -29,11 +29,9 @@ class HomeController extends GetxController {
       _isloading.value = true;
       final response = await supabase.from('categories').select('category_id, name, image_path');
 
-      print('Response: $response');
       final data = response.map((e) => CategoryModel.fromJson(e)).toList();
-      print('This is data $data');
+      // print('This is data $data');
       categories.value = data;
-      print(categories);
       return categories;
 
     } catch (e) {
