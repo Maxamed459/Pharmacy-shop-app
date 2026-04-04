@@ -7,14 +7,13 @@ import 'package:pharmacy_app/models/item_model.dart';
 import 'package:pharmacy_app/widgets/custom_navbar.dart';
 import 'package:pharmacy_app/widgets/hero_widget.dart';
 import 'package:pharmacy_app/widgets/medicine_search_widget.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
-
-
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -39,75 +38,126 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         CircleAvatar(
                           backgroundColor: Colors.grey,
-                          foregroundImage: AssetImage('assets/images/profile.jpg'),
+                          foregroundImage: AssetImage(
+                            'assets/images/profile.jpg',
+                          ),
                           radius: 25.0,
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Good Morning", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                            Text("Mr Mohamed")
+                            Text(
+                              "Good Morning",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text("Mr Mohamed"),
                           ],
-                        )
+                        ),
                       ],
                     ),
                     CircleAvatar(
                       radius: 20.0,
-                      child: IconButton(onPressed: (){
-                        _authController.signOut();
-                      }, icon: Icon(Icons.logout)),
-                    )
+                      child: IconButton(
+                        onPressed: () {
+                          _authController.signOut();
+                        },
+                        icon: Icon(Icons.logout),
+                      ),
+                    ),
                   ],
                 ),
-                Divider(thickness: 1,),
+                Divider(thickness: 1),
                 MedicineSearchWidget(),
-                SizedBox(height: 10.0,),
+                SizedBox(height: 10.0),
                 HeroWidget(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Top Categories", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),),
-                    Text("See All", style: TextStyle(color: Color(0xff59a381), fontWeight: FontWeight.w500),),
+                    Text(
+                      "Top Categories",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Text(
+                      "See All",
+                      style: TextStyle(
+                        color: Color(0xff59a381),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ],
                 ),
                 SizedBox(
                   height: 100,
                   child: Obx(() {
-                    return ListView.builder(
+                    final isLoading = _homeController.isLoading;
+                    return Skeletonizer(
+                      enabled: isLoading,
+                      effect: ShimmerEffect(
+                        duration: const Duration(milliseconds: 1100),
+                      ),
+                      child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: _homeController.categories.length,
                         itemBuilder: (context, index) {
                           final category = _homeController.categories[index];
                           return _buildCategory(category);
-                        }
+                        },
+                      ),
                     );
-                  })
+                  }),
                 ),
-                SizedBox(height: 10.0,),
+                SizedBox(height: 10.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Bestseller Products", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),),
-                    Text("See All", style: TextStyle(color: Color(0xff59a381), fontWeight: FontWeight.w500),),
+                    Text(
+                      "Bestseller Products",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Text(
+                      "See All",
+                      style: TextStyle(
+                        color: Color(0xff59a381),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ],
                 ),
-                SizedBox(height: 10.0,),
-                GridView.builder(
-                  shrinkWrap: true,
-                  itemCount: _homeController.bestSellerProduct.length,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 0.75,
-                  ),
-                  itemBuilder: (context, index) {
-                    final item = _homeController.bestSellerProduct[index];
-                    return _buildItemCard(item);
-                  },
-
-                )
+                SizedBox(height: 10.0),
+                Obx(() {
+                  final isLoading = _homeController.isLoading;
+                  return Skeletonizer(
+                    enabled: isLoading,
+                    effect: ShimmerEffect(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                    ),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      itemCount: _homeController.bestSellerProduct.length,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10,
+                        childAspectRatio: 0.75,
+                      ),
+                      itemBuilder: (context, index) {
+                        final item = _homeController.bestSellerProduct[index];
+                        return _buildItemCard(item);
+                      },
+                    ),
+                  );
+                }),
               ],
             ),
           ),
@@ -125,15 +175,15 @@ class _HomeScreenState extends State<HomeScreen> {
           width: 65,
           padding: EdgeInsets.all(10.0),
           decoration: BoxDecoration(
-              color: Colors.green.shade100,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.green.shade300,
-                    blurRadius: 5,
-                    offset: Offset(0,2,)
-                )
-              ]
+            color: Colors.green.shade100,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.green.shade300,
+                blurRadius: 5,
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
           child: Center(
             child: category.imagePath.isNotEmpty
@@ -141,8 +191,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 : Icon(Icons.image_not_supported),
           ),
         ),
-        SizedBox(height: 10.0,),
-        Text(category.name, style: TextStyle(fontWeight: FontWeight.w500),)
+        SizedBox(height: 10.0),
+        Text(category.name, style: TextStyle(fontWeight: FontWeight.w500)),
       ],
     );
   }
@@ -150,30 +200,30 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildItemCard(ItemModel item) {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.grey.shade300,
-                blurRadius: 8,
-                offset: Offset(0,2,)
-            )
-          ]
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade300,
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         children: [
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(16))
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
               ),
               child: Stack(
                 children: [
                   Center(
                     child: Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Image.asset(item.imagePath, fit: BoxFit.contain,),
+                      child: Image.network(item.imagePath, fit: BoxFit.contain),
                     ),
                   ),
                   Positioned(
@@ -183,13 +233,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 32,
                       width: 32,
                       decoration: BoxDecoration(
-                          color: Colors.green.shade600,
-                          shape: BoxShape.circle
+                        color: Colors.green.shade600,
+                        shape: BoxShape.circle,
                       ),
                       child: IconButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: (){},
-                          icon: Icon(Icons.add, color: Colors.white,)
+                        padding: EdgeInsets.zero,
+                        onPressed: () {},
+                        icon: Icon(Icons.add, color: Colors.white),
                       ),
                     ),
                   ),
@@ -203,22 +253,28 @@ class _HomeScreenState extends State<HomeScreen> {
               spacing: 8.0,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(item.name, style: TextStyle(
+                Text(
+                  item.name,
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Colors.black87
-                ),),
+                    color: Colors.black87,
+                  ),
+                ),
                 Text(item.category),
                 Row(
                   children: [
-                    Text(item.price.toString(), style: TextStyle(
+                    Text(
+                      item.price.toString(),
+                      style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w800
-                    )),
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                     Spacer(),
-                    Icon(Icons.favorite, color: Colors.red,)
+                    Icon(Icons.favorite, color: Colors.red),
                   ],
-                )
+                ),
               ],
             ),
           ),
