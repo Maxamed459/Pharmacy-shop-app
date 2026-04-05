@@ -4,6 +4,7 @@ import 'package:pharmacy_app/controllers/auth_controller.dart';
 import 'package:pharmacy_app/controllers/home_controller.dart';
 import 'package:pharmacy_app/models/category_model.dart';
 import 'package:pharmacy_app/models/item_model.dart';
+import 'package:pharmacy_app/screens/products/product_view.dart';
 import 'package:pharmacy_app/widgets/custom_navbar.dart';
 import 'package:pharmacy_app/widgets/hero_widget.dart';
 import 'package:pharmacy_app/widgets/medicine_search_widget.dart';
@@ -198,87 +199,104 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildItemCard(ItemModel item) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade300,
-            blurRadius: 8,
-            offset: Offset(0, 2),
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProductView(
+            name: item.name,
+            imagePath: item.imagePath,
+            description: item.description,
+            category: item.category,
+            price: item.price,
           ),
-        ],
+        ),
       ),
-      child: Column(
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade300,
+              blurRadius: 8,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                ),
+                child: Stack(
+                  children: [
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Image.network(
+                          item.imagePath,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        height: 32,
+                        width: 32,
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade600,
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {},
+                          icon: Icon(Icons.add, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              child: Stack(
+            ),
+            Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Column(
+                spacing: 8.0,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Image.network(item.imagePath, fit: BoxFit.contain),
+                  Text(
+                    item.name,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
                     ),
                   ),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Container(
-                      height: 32,
-                      width: 32,
-                      decoration: BoxDecoration(
-                        color: Colors.green.shade600,
-                        shape: BoxShape.circle,
+                  Text(item.category),
+                  Row(
+                    children: [
+                      Text(
+                        item.price.toString(),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {},
-                        icon: Icon(Icons.add, color: Colors.white),
-                      ),
-                    ),
+                      Spacer(),
+                      Icon(Icons.favorite, color: Colors.red),
+                    ],
                   ),
                 ],
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(12.0),
-            child: Column(
-              spacing: 8.0,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.name,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
-                ),
-                Text(item.category),
-                Row(
-                  children: [
-                    Text(
-                      item.price.toString(),
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    Spacer(),
-                    Icon(Icons.favorite, color: Colors.red),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
