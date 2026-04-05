@@ -6,7 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthController extends GetxController {
   final _isloading = false.obs;
-  get isloading => _isloading.value;
+  bool get isloading => _isloading.value;
   final supabase = Supabase.instance.client;
 
   Future<void> signUpWithPassword(String email, String password) async {
@@ -77,10 +77,9 @@ class AuthController extends GetxController {
 
   Future<void> signOut() async {
     try {
-      final response = await supabase.auth.signOut();
+      await supabase.auth.signOut();
       Get.offAll(() => SigninScreen());
-
-    } catch(error) {
+    } catch (error) {
       _isloading.value = false;
       Get.showSnackbar(
         GetSnackBar(
