@@ -12,24 +12,27 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   Future<void> _redirect() async {
     await Future.delayed(Duration.zero);
-    final session = await Supabase.instance.client.auth.currentSession;
-    if (session != null ) {
+    if (!mounted) return;
+
+    final session = Supabase.instance.client.auth.currentSession;
+    if (session != null) {
       Get.offAll(() => HomeScreen());
     } else {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => WelcomeScreen(),));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => WelcomeScreen()),
+      );
     }
-
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _redirect();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
