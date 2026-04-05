@@ -22,7 +22,6 @@ class _SigninScreenState extends State<SigninScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
@@ -40,7 +39,7 @@ class _SigninScreenState extends State<SigninScreen> {
         child: ConstrainedBox(
           constraints: BoxConstraints(
             minHeight:
-            MediaQuery.of(context).size.height -
+                MediaQuery.of(context).size.height -
                 kToolbarHeight -
                 MediaQuery.of(context).padding.top,
           ),
@@ -140,14 +139,18 @@ class _SigninScreenState extends State<SigninScreen> {
                         }
                       },
                       child: _authController.isloading
-                          ? CircularProgressIndicator(color: Colors.white, strokeWidth: 1.0, strokeAlign: 3.0,)
+                          ? CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 1.0,
+                              strokeAlign: 3.0,
+                            )
                           : Text(
-                        "Sign In",
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                      ),
+                              "Sign In",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                              ),
+                            ),
                     );
                   }),
                   Row(
